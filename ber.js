@@ -1,98 +1,153 @@
-const loginModal = document.getElementById('loginModal');
-const signupModal = document.getElementById('signupModal');
-const openLoginModal = document.getElementById('openLoginModal');
-const openSignupModal = document.getElementById('openSignupModal');
-const closeLogin = document.getElementById('closeLogin');
-const closeSignup = document.getElementById('closeSignup');
+document.addEventListener('DOMContentLoaded', function () {
+    const createPostBtn = 
+        document.getElementById('createPostBtn');
+    const createPostModal = 
+        document.getElementById('createPostModal');
+    const closeModal = 
+        document.getElementById('closeModal');
+    const postForm = 
+        document.getElementById('postForm');
+    const postSubmitBtn = 
+        document.getElementById('postSubmitBtn');
+    const postContainer = 
+        document.querySelector('.post-container');
+    const postDetailModal = 
+        document.getElementById('postDetailModal');
+    const closeDetailModal = 
+        document.getElementById('closeDetailModal');
+    const detailTitle = 
+        document.getElementById('detailTitle');
+    const detailDate = 
+        document.getElementById('detailDate');
+    const detailDescription = 
+        document.getElementById('detailDescription');
 
-openLoginModal.addEventListener('click', () => {
-    loginModal.style.display = 'flex';
-});
+    createPostBtn.addEventListener('click', function () {
+        createPostModal.style.display = 'flex';
+    });
 
-closeLogin.addEventListener('click', () => {
-    loginModal.style.display = 'none';
-});
+    closeModal.addEventListener('click', function () {
+        // Add fadeOut class
+        createPostModal.classList.add('fadeOut');
+        setTimeout(() => {
+            createPostModal.style.display = 'none';
+            // Remove fadeOut class
+            createPostModal.classList.remove('fadeOut');
+        }, 500);
+    });
 
-openSignupModal.addEventListener('click', () => {
-    signupModal.style.display = 'flex';
-});
+    postForm.addEventListener('submit', function (event) {
+        event.preventDefault();
 
-closeSignup.addEventListener('click', () => {
-    signupModal.style.display = 'none';
-});
+        // Validation
+        const postCategory = 
+            document.getElementById('postCategory').value;
+        const postTitle = 
+            document.getElementById('postTitle').value;
+        const postDescription = 
+            document.getElementById('postDescription').value;
 
-document.getElementById('exitBtn').addEventListener('click', () => {
-    if (confirm("Are you sure you want to exit?")) {
-        window.close();
-    }
-});
+        if (postCategory.trim() === '' ||
+         postTitle.trim() === '' || 
+         postDescription.trim() === '') {
+            alert('Please fill out all fields.');
+            return;
+        }
 
-document.getElementById('loginForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const username = document.getElementById('loginUsername').value;
-    const password = document.getElementById('loginPassword').value;
-    alert(`Welcome back, ${username}!`);
-    loginModal.style.display = 'none';
-});
+       
+        const currentDate = new Date();
+        const day = currentDate.getDate();
+        const month = currentDate.toLocaleString('default',
+         { month: 'short' });
+        const year = currentDate.getFullYear();
+        const formattedDate = day + ' ' + month + ' ' + year;
 
-document.getElementById('signupForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const username = document.getElementById('signupUsername').value;
-    const password = document.getElementById('signupPassword').value;
-    alert(`Account created for ${username}!`);
-    signupModal.style.display = 'none';
-});
+        
+        const newPost = document.createElement('div');
+        newPost.className = 'post-box';
+        newPost.innerHTML = `
+            <h1 class="post-title" data-title="${postTitle}"
+         data-date="${formattedDate}"
+          data-description="${postDescription}">
+            ${postTitle}</h1><br>
+            
+        <h2 class="category">${postCategory}</h2><br>
+        <span class="post-date">${formattedDate}</span>
+        <p class="post-description">
+        ${postDescription.substring(0, 100)}...</p>
+        <button class="delete-post" data-title="${postTitle}">
+        Delete</button>
+        <span class="load-more" data-title="${postTitle}" 
+        data-date="${formattedDate}" 
+        data-description="${postDescription}">
+        Load more</span>
+        `;
 
-window.addEventListener('click', (e) => {
-    if (e.target === loginModal) loginModal.style.display = 'none';
-    if (e.target === signupModal) signupModal.style.display = 'none';
-});
-const loginModal = document.getElementById('loginModal');
-const signupModal = document.getElementById('signupModal');
-const openLoginModal = document.getElementById('openLoginModal');
-const openSignupModal = document.getElementById('openSignupModal');
-const closeLogin = document.getElementById('closeLogin');
-const closeSignup = document.getElementById('closeSignup');
+        // Append the new post to the post container
+        postContainer.insertBefore(newPost, 
+            postContainer.firstChild);
 
-openLoginModal.addEventListener('click', () => {
-    loginModal.style.display = 'flex';
-});
+        const postCreatedMessage = document
+        .getElementById('postCreatedMessage');
+        postCreatedMessage.style.display = 'block';
 
-closeLogin.addEventListener('click', () => {
-    loginModal.style.display = 'none';
-});
 
-openSignupModal.addEventListener('click', () => {
-    signupModal.style.display = 'flex';
-});
+        
+        createPostModal.style.display = 'none';
 
-closeSignup.addEventListener('click', () => {
-    signupModal.style.display = 'none';
-});
+        
+        postForm.reset();
 
-document.getElementById('exitBtn').addEventListener('click', () => {
-    if (confirm("Are you sure you want to exit?")) {
-        window.close();
-    }
-});
+        setTimeout(() => {
+            postCreatedMessage.style.display = 'none';
+        }, 3000);
+    });
 
-document.getElementById('loginForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const username = document.getElementById('loginUsername').value;
-    const password = document.getElementById('loginPassword').value;
-    alert(`Welcome back, ${username}!`);
-    loginModal.style.display = 'none';
-});
+    postContainer.addEventListener('click', function (event) {
+        if (event.target.classList.contains('load-more') ||
+         event.target.classList.contains('post-title')) {
+            const title = event.target.getAttribute('data-title');
+            const date = event.target.getAttribute('data-date');
+            const description = 
+                event.target.getAttribute('data-description');
 
-document.getElementById('signupForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const username = document.getElementById('signupUsername').value;
-    const password = document.getElementById('signupPassword').value;
-    alert(`Account created for ${username}!`);
-    signupModal.style.display = 'none';
-});
+            
+            detailTitle.textContent = title;
+            detailDate.textContent = date;
+            detailDescription.textContent = description;
 
-window.addEventListener('click', (e) => {
-    if (e.target === loginModal) loginModal.style.display = 'none';
-    if (e.target === signupModal) signupModal.style.display = 'none';
+            
+            postDetailModal.style.display = 'flex';
+        }
+
+        if (event.target.classList.contains('delete-post')) {
+            const titleToDelete = 
+                event.target.getAttribute('data-title');
+            const postToDelete = 
+                document.querySelector(`
+            .post-title[data-title=
+                "${titleToDelete}"]`).closest('.post-box');
+
+            
+            postToDelete.classList.add('fadeOut');
+
+            
+            setTimeout(() => {
+                postContainer.removeChild(postToDelete);
+            }, 500);
+
+        }
+    });
+
+    closeDetailModal.addEventListener('click', function () {
+    
+       
+        postDetailModal.classList.add('fadeOut'); 
+        setTimeout(() => {
+           postDetailModal.style.display = 'none';
+           
+           
+          postDetailModal.classList.remove('fadeOut'); 
+        }, 500);
+    });
 });
